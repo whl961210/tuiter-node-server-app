@@ -51,7 +51,13 @@ const AuthController = (app) => {
         try {
             const result = await usersDao.updateUser(userId, updates);
             if (result && result.status === 'ok') {
-                res.json({ message: "User updated successfully." });
+                // Fetch the updated user data
+                const updatedUser = await usersDao.findUserById(userId);
+                
+                // Update the session with the fetched data
+                req.session["currentUser"] = updatedUser;
+    
+                res.json({ message: "User updated successfully.", user: updatedUser });
             } else {
                 res.status(500).json({ message: "Failed to update user." });
             }
@@ -59,6 +65,7 @@ const AuthController = (app) => {
             res.status(500).json({ message: "Server error.", error: error.message });
         }
     };
+    
     
 
     app.post("/api/users/register", register);

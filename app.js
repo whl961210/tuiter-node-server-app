@@ -5,12 +5,13 @@ import TuitsController from "./controllers/tuits/tuits-controller.js";
 import cors from 'cors';
 import session from "express-session";
 import AuthController from "./users/auth-controller.js";
+import "dotenv/config";
 
 const app = express();
 app.use(
     cors({
         credentials: true,
-        origin: "http://localhost:3000",
+        origin: process.env.FRONTEND_URL,
     })
 );
 app.use(express.json());
@@ -19,13 +20,21 @@ const sessionOptions = {
     resave: false,
     saveUninitialized: false,
 };
-app.use(
-    session(sessionOptions)
-);
+
+if (process.env.NODE_ENV !== "development") {
+    sessionOptions.proxy = true;
+    sessionOptions.cookie = {
+        sameSite: "none",
+        secure: true,
+    };
+}
+app.use(session(sessionOptions));
+
 
 TuitsController(app);
 AuthController(app);
 HelloController(app);
 UserController(app);
-app.listen(4000);
+app.listen(process.env.PORT || 4000);
+
 const port = process.env.PORT || 4000;
