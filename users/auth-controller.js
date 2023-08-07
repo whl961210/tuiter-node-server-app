@@ -6,7 +6,7 @@ const AuthController = (app) => {
         const username = req.body.username;
         const user = usersDao.findUserByUsername(username);
         if (user) {
-            res.sendStatus(409);
+            res.sendStatus(409).json({ message: 'Username already exists.' });
             return;
         }
         const newUser = usersDao.createUser(req.body);
@@ -22,7 +22,7 @@ const AuthController = (app) => {
             req.session["currentUser"] = user;
             res.json(user);
         } else {
-            res.sendStatus(404);
+            res.sendStatus(404).json({ message: 'Wrong credentials.' });
         }
     };
 
