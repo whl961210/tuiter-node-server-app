@@ -38,11 +38,33 @@ const AuthController = (app) => {
         req.session.destroy();
         res.sendStatus(200);
     };
-    const update = (req, res) => { };
+    const update = async (req, res) => {
+        const currentUser = req.session["currentUser"];
+        if (!currentUser) {
+            res.status(404).json({ message: "User not logged in." });
+            return;
+        }
+    
+        const userId = currentUser._id;
+        const updates = req.body;
+    
+        try {
+            const result = await usersDao.updateUser(userId, updates);
+            if (result && result.status === 'ok') {
+                res.json({ message: "User updated successfully." });
+            } else {
+                res.status(500).json({ message: "Failed to update user." });
+            }
+        } catch (error) {
+            res.status(500).json({ message: "Server error.", error: error.message });
+        }
+    };
+    
+
     app.post("/api/users/register", register);
     app.post("/api/users/login", login);
     app.post("/api/users/profile", profile);
     app.post("/api/users/logout", logout);
-    app.put("/api/users", update);
+    app.put("/api/users/update", update);
 };
 export default AuthController;
