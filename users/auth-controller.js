@@ -6,6 +6,7 @@ const AuthController = (app) => {
         const username = req.body.username;
         const user = usersDao.findUserByUsername(username);
         if (user) {
+            console.log(user);
             res.status(409).json({ message: 'Username already exists.' });
             return;
         }
