@@ -15,6 +15,7 @@ const createTuit = (req, res) => {
   if (!newTuit.image) {
     newTuit.image = 'https://images.seattletimes.com/wp-content/uploads/2019/07/nasameatball.jpg';
   }
+  newTuit.time = '1h';
   tuits.push(newTuit);
   res.json(newTuit);
 }

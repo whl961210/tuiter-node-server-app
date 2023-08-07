@@ -6,14 +6,14 @@ const AuthController = (app) => {
         const username = req.body.username;
         const user = usersDao.findUserByUsername(username);
         if (user) {
-            res.sendStatus(409).json({ message: 'Username already exists.' });
+            res.status(409).json({ message: 'Username already exists.' });
             return;
         }
         const newUser = usersDao.createUser(req.body);
         req.session["currentUser"] = newUser;
         res.json(newUser);
     };
-
+    
     const login = (req, res) => {
         const username = req.body.username;
         const password = req.body.password;
@@ -22,7 +22,7 @@ const AuthController = (app) => {
             req.session["currentUser"] = user;
             res.json(user);
         } else {
-            res.sendStatus(404).json({ message: 'Wrong credentials.' });
+            res.status(404).json({ message: 'Wrong credentials.' });
         }
     };
 
