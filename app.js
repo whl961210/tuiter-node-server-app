@@ -8,13 +8,24 @@ import AuthController from "./users/auth-controller.js";
 import "dotenv/config";
 
 const app = express();
+
+const allowedOrigins = ['https://hanlun5610a1.netlify.app', process.env.FRONTEND_URL];
+
 app.use(
     cors({
-        credentials: true,
-        origin: process.env.FRONTEND_URL,
+        origin: function (origin, callback) {
+            if (!origin) return callback(null, true);
+            if (allowedOrigins.indexOf(origin) === -1) {
+                return callback(new Error('The CORS policy for this site does not allow access from the specified origin.'), false);
+            }
+            return callback(null, true);
+        },
+        credentials: true
     })
 );
+
 app.use(express.json());
+
 const sessionOptions = {
     secret: "any string",
     resave: false,
@@ -30,11 +41,12 @@ if (process.env.NODE_ENV !== "development") {
 }
 app.use(session(sessionOptions));
 
-
 TuitsController(app);
 AuthController(app);
 HelloController(app);
 UserController(app);
-app.listen(process.env.PORT || 4000);
 
 const port = process.env.PORT || 4000;
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});
