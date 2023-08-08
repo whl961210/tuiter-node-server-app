@@ -46,14 +46,14 @@ const AuthController = (app) => {
             return;
         }
     
-        const userId = currentUser._id;
+        const username = currentUser.username;
         const updates = req.body;
     
         try {
-            const result = await usersDao.updateUser(userId, updates);
+            const result = await usersDao.updateUser(username, updates);
             if (result && result.status === 'ok') {
                 // Fetch the updated user data
-                const updatedUser = await usersDao.findUserById(userId);
+                const updatedUser = await usersDao.findUserByUsername(username);
                 
                 // Update the session with the fetched data
                 req.session["currentUser"] = updatedUser;
@@ -66,6 +66,7 @@ const AuthController = (app) => {
             res.status(500).json({ message: "Server error.", error: error.message });
         }
     };
+    
     
     
 
