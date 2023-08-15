@@ -57,7 +57,7 @@ const AuthController = (app) => {
             const result = await usersDao.updateUser(username, updates);
             if (result && result.status === 'ok') {
                 // Fetch the updated user data
-                const updatedUser = await usersDao.findUserByUsername(username);
+                const updatedUser = await usersDao.findUserById(username);
                 
                 // Update the session with the fetched data
                 req.session["currentUser"] = updatedUser;
