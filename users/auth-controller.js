@@ -5,31 +5,31 @@ const AuthController = (app) => {
     const register = async (req, res) => {
         const user = await usersDao.findUserByUsername(req.body.username);
         if (user) {
-          res.sendStatus(403);
-          return;
+            res.sendStatus(403);
+            return;
         }
         const newUser = await usersDao.createUser(req.body);
         req.session["currentUser"] = newUser;
         res.json(newUser);
-      };
-      
-    
-      const login = async (req, res) => {
+    };
+
+
+    const login = async (req, res) => {
         const username = req.body.username;
         const password = req.body.password;
         if (username && password) {
-          const user = await usersDao.findUserByCredentials(username, password);
-          if (user) {
-            req.session["currentUser"] = user;
-            res.json(user);
-          } else {
-            res.sendStatus(403);
-          }
+            const user = await usersDao.findUserByCredentials(username, password);
+            if (user) {
+                req.session["currentUser"] = user;
+                res.json(user);
+            } else {
+                res.sendStatus(403);
+            }
         } else {
-          res.sendStatus(403);
+            res.sendStatus(403);
         }
-      };
-      
+    };
+
 
     const profile = (req, res) => {
         const currentUser = req.session["currentUser"];
@@ -49,19 +49,21 @@ const AuthController = (app) => {
             res.status(404).json({ message: "User not logged in." });
             return;
         }
-    
-        const username = currentUser.username;
+
+        // Extract the user's ID from the currentUser object
+        const userId = currentUser._id;
         const updates = req.body;
-    
+
         try {
-            const result = await usersDao.updateUser(username, updates);
-            if (result && result.status === 'ok') {
-                // Fetch the updated user data
-                const updatedUser = await usersDao.findUserByUsername(username);
-                
+            // Update the user based on ID
+            const result = await usersModel.updateUser(userId, updates);
+            if (result.nModified > 0) { // Check if any documents were modified
+                // Fetch the updated user data based on ID
+                const updatedUser = await usersModel.findUserById(userId);
+
                 // Update the session with the fetched data
                 req.session["currentUser"] = updatedUser;
-    
+
                 res.json({ message: "User updated successfully.", user: updatedUser });
             } else {
                 res.status(500).json({ message: "Failed to update user." });
@@ -70,9 +72,10 @@ const AuthController = (app) => {
             res.status(500).json({ message: "Server error.", error: error.message });
         }
     };
-    
-    
-    
+
+
+
+
 
     app.post("/api/users/register", register);
     app.post("/api/users/login", login);
