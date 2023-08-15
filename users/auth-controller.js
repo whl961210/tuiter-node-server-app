@@ -50,24 +50,17 @@ const AuthController = (app) => {
             return;
         }
 
-        // Extract the user's ID from the currentUser object
         const userId = currentUser._id;
         const updates = req.body;
 
         try {
             // Update the user based on ID
             const result = await usersDao.updateUser(userId, updates);
-            if (result.nModified > 0) { // Check if any documents were modified
-                // Fetch the updated user data based on ID
-                const updatedUser = await usersDao.findUserById(userId);
+            const updatedUser = await usersDao.findUserById(userId);
 
-                // Update the session with the fetched data
                 req.session["currentUser"] = updatedUser;
-
                 res.json({ message: "User updated successfully.", user: updatedUser });
-            } else {
-                res.status(500).json({ message: "Failed to update user." });
-            }
+
         } catch (error) {
             res.status(500).json({ message: "Server error.", error: error.message });
         }
