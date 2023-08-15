@@ -56,10 +56,10 @@ const AuthController = (app) => {
 
         try {
             // Update the user based on ID
-            const result = await usersModel.updateUser(userId, updates);
+            const result = await usersDao.updateUser(userId, updates);
             if (result.nModified > 0) { // Check if any documents were modified
                 // Fetch the updated user data based on ID
-                const updatedUser = await usersModel.findUserById(userId);
+                const updatedUser = await usersDao.findUserById(userId);
 
                 // Update the session with the fetched data
                 req.session["currentUser"] = updatedUser;
