@@ -6,7 +6,9 @@ import cors from 'cors';
 import session from "express-session";
 import AuthController from "./users/auth-controller.js";
 import "dotenv/config";
-
+import mongoose from "mongoose";
+const CONNECTION_STRING = 'mongodb+srv://whl961210:Whw720717@tuiter.ultjclb.mongodb.net/?retryWrites=true&w=majority' || 'mongodb://127.0.0.1:27017/tuiter'
+mongoose.connect(CONNECTION_STRING);
 const app = express();
 
 const allowedOrigins = ['https://hanlun5610a1.netlify.app', process.env.FRONTEND_URL];
