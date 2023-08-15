@@ -11,7 +11,7 @@ const CONNECTION_STRING = 'mongodb+srv://whl961210:Whw720717@tuiter.ultjclb.mong
 mongoose.connect(CONNECTION_STRING);
 const app = express();
 
-const allowedOrigins = ['https://hanlun5610a1.netlify.app', process.env.FRONTEND_URL];
+const allowedOrigins = ['https://hanlun5610a1.netlify.app', process.env.FRONTEND_URL,'https://silver-horse-c989b9.netlify.app'];
 
 app.use(
     cors({
